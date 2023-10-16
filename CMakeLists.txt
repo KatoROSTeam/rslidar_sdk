@@ -81,46 +81,6 @@ message(=============================================================)
 #========================
 # Dependencies Setup
 #========================
-
-#ROS#
-find_package(roscpp 1.12 QUIET)
-
-if(roscpp_FOUND)
-
-  message(=============================================================)
-  message("-- ROS Found. ROS Support is turned On.")
-  message(=============================================================)
-
-  add_definitions(-DROS_FOUND)
-
-  find_package(roslib QUIET)
-  include_directories(${roscpp_INCLUDE_DIRS} ${roslib_INCLUDE_DIRS})
-  set(ROS_LIBS ${roscpp_LIBRARIES} ${roslib_LIBRARIES})
-
-  #Catkin#
-  if(${COMPILE_METHOD} STREQUAL "CATKIN")
-
-    add_definitions(-DRUN_IN_ROS_WORKSPACE)
-
-    find_package(catkin REQUIRED COMPONENTS
-      roscpp
-      sensor_msgs
-      roslib)
-
-    catkin_package(CATKIN_DEPENDS 
-      sensor_msgs 
-      roslib)
-
-  endif(${COMPILE_METHOD} STREQUAL "CATKIN")
-
-else(roscpp_FOUND)
-
-  message(=============================================================)
-  message("-- ROS Not Found. ROS Support is turned Off.")
-  message(=============================================================)
-
-endif(roscpp_FOUND)
-
 #ROS2#
 find_package(rclcpp QUIET)
 
@@ -170,22 +130,6 @@ target_link_libraries(rslidar_sdk_node
                       ${YAML_CPP_LIBRARIES}
                       ${rs_driver_LIBRARIES})
 
-#Ros#
-if(roscpp_FOUND)
-
-  target_link_libraries(rslidar_sdk_node 
-    ${ROS_LIBS})
-
-  if(${COMPILE_METHOD} STREQUAL "CATKIN")
-
-    install(TARGETS rslidar_sdk_node
-            RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-            LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-            ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
-
-  endif()
-
-endif(roscpp_FOUND)
 
 #Ros2#
 if(rclcpp_FOUND AND ${COMPILE_METHOD} STREQUAL "COLCON")
